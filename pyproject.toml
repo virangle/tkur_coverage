@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tkur_coverage"
+version = "0.1.1"
+description = "Measured LLVM and coverage.py corpus-replay HTML reports"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+dependencies = ["coverage>=7.4,<8"]
+
+[project.scripts]
+tkur_coverage = "tkur_coverage.__main__:main"
+tkur-coverage = "tkur_coverage.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tkur_coverage*"]
+
+[tool.setuptools.package-data]
+tkur_coverage = ["assets/*"]

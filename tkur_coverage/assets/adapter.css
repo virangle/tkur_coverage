@@ -1,0 +1,95 @@
+/* tkur_coverage adapter for LLVM and coverage.py markup.
+ * Unmodified tkur_jacoco report.css provides the shared visual design.
+ * Counter values, source contents and upstream notices are not rewritten.
+ */
+html { color-scheme:light; }
+html body { background:#f2f5fd; color:#172b4d; margin:0; padding:0 32px 24px; font:14px/1.5 Arial,"DejaVu Sans",sans-serif; }
+html body .tkur-header { position:static; margin:0 -32px; padding:10px 32px; background:#021d59; border:0; border-bottom:3px solid #1a9ae2; color:#fff; display:flex; gap:16px; align-items:center; justify-content:space-between; flex-wrap:wrap; box-shadow:none; }
+html body .tkur-header .tkur-wordmark { color:#fff; font-size:17px; font-weight:bold; line-height:1.35; flex:1; }
+html body .tkur-header .tkur-logo { width:120px; height:auto; padding:6px; background:#fff; border-radius:6px; flex-shrink:0; }
+html body .tkur-product { text-align:right; flex-shrink:0; }
+html body .tkur-product span { display:block; }
+html body .tkur-product-name { font-size:12px; font-weight:bold; }
+html body .tkur-product-description { margin-top:2px; font-size:9px; letter-spacing:1px; color:#bfdfff; }
+html body .tkur-created { margin-top:4px; font-size:11px; color:#d3e5ff; font-variant-numeric:tabular-nums; }
+html body .breadcrumb { margin:0 -32px 28px; padding:13px 32px; border:0; border-bottom:1px solid #d7e1f2; background:#fff; font-size:13px; }
+html body a { color:#0941be; text-decoration:none; }
+html body a:hover { text-decoration:underline; }
+html body h1, html body h2 { color:#021d59; }
+html body h1 { margin:0 0 14px; font-size:28px; line-height:1.3; }
+html body > header:not(.tkur-header) { position:static; margin:0 0 20px; padding:0; background:transparent; border:0; box-shadow:none; }
+html body > header:not(.tkur-header) .content, html body main, html body > footer .content { margin:0; padding:0; max-width:none; }
+html body .tkur-legend { margin-bottom:24px; }
+/* Summary tables: retain all engine cells and sorting/keyboard data attributes. */
+html body table.coverage, html body table.index, html body .centered > table:not(.llvm-source) { width:100%; display:table; border-collapse:collapse; background:#fff; box-shadow:0 2px 8px #021d5910; font-variant-numeric:tabular-nums; margin:0; }
+html body table.coverage thead, html body table.index thead { color:#fff; background:#021d59; }
+html body table.coverage thead td, html body table.index thead th, html body .centered > table:not(.llvm-source) > tbody > tr:first-child > td { color:#fff; background-color:#021d59; padding:13px 18px 13px 12px; border-bottom:3px solid #1a9ae2; font: bold 12px Arial,"DejaVu Sans",sans-serif; }
+html body table.coverage tbody td, html body table.coverage tfoot td, html body table.index td, html body .centered > table:not(.llvm-source) > tbody > tr:not(:first-child) > td { padding:12px; border-bottom:1px solid #e3eaf5; font:14px/1.5 Arial,"DejaVu Sans",sans-serif; }
+html body table.index tbody tr:nth-child(even), html body .centered > table:not(.llvm-source) tr:nth-child(even) { background:#f7f9fe; }
+html body table.index tbody tr:hover, html body .centered > table:not(.llvm-source) tr:not(:first-child):hover { background:#e7efff; }
+html body table.index tfoot, html body .centered > table:not(.llvm-source) tr.light-row-bold { color:#021d59; background:#e5edfc; font-weight:bold; }
+html body .centered { text-align:left; overflow-x:auto; }
+html body .centered > table:not(.llvm-source) pre { margin:0; white-space:normal; font:inherit; }
+html body td.column-entry-green { color:#228644; background:#e8f6ed; }
+html body td.column-entry-yellow { color:#775500; background:#fff6da; }
+html body td.column-entry-red { color:#a12734; background:#fdecef; }
+/* Source views preserve coverage status semantics and monospace source code. */
+html body table:not(.coverage):not(.index) td.line-number, html body table:not(.coverage):not(.index) td.covered-line, html body table:not(.coverage):not(.index) td.uncovered-line { font:13px/1.65 "DejaVu Sans Mono",Consolas,monospace; }
+html body pre, html body main#source p, html body .source, html body .code, html body .source-line { font-family:"DejaVu Sans Mono",Consolas,monospace; font-size:13px; }
+html body main#source { background:#fff; border:1px solid #d7e1f2; border-radius:4px; padding:18px 8px; overflow-x:auto; }
+html body .source-line { white-space:pre; }
+html body table.llvm-source { width:100%; border-collapse:collapse; background:#fff; border:1px solid #d7e1f2; }
+html body table.llvm-source td { padding:0 8px; vertical-align:top; }
+html body table.llvm-source td pre { margin:0; white-space:pre; font:13px/1.65 "DejaVu Sans Mono",Consolas,monospace; }
+html body table.llvm-source tr:first-child td { color:#fff; background:#021d59; border-bottom:3px solid #1a9ae2; padding:10px 8px; }
+html body table.llvm-source tr:first-child a { color:#d3e5ff; }
+html body table.llvm-source td.code { width:100%; text-align:left; }
+html body table.llvm-source td.line-number { color:#637895; background:#f2f5fd; text-align:right; }
+html body table.llvm-source td.covered-line { background:#ccffcc; }
+html body table.llvm-source td.uncovered-line { background:#ffaaaa; }
+html body table.llvm-source .source-name-title { color:#021d59; font:13px Arial,"DejaVu Sans",sans-serif; }
+html body table.llvm-source .expansion-view pre { font-size:12px; }
+
+html body .arrows { background-image:url(sort.svg); background-size:13px 13px; }
+html body #keyboard_icon { width:20px; height:20px; }
+html body .footer { margin-top:32px; padding-top:16px; border-top:1px solid #cbd8ed; color:#526580; font:12px/1.5 Arial,"DejaVu Sans",sans-serif; }
+html body .footer .right { float:right; }
+html body .footer .tkur-owner { display:block; color:#021d59; font-weight:bold; margin-bottom:5px; }
+html body > footer:not(.footer) { background:transparent; border:0; font-size:12px; color:#526580; }
+/* Override coverage.py ID-specific defaults, including dark-mode media styles. */
+html body #index { margin:0; font:14px/1.5 Arial,"DejaVu Sans",sans-serif; overflow-x:auto; }
+html body #index table.index { margin:0; }
+/* JaCoCo's global .right float is for the footer, not coverage.py cells. */
+html body #index table.index th, html body #index table.index td {
+  float:none; display:table-cell; vertical-align:middle;
+}
+html body #index table.index thead th { white-space:nowrap; }
+html body #index table.index thead th, html body #index table.index th[aria-sort] { color:#fff; background:#021d59; font: bold 12px/1.5 Arial,"DejaVu Sans",sans-serif; padding:13px 18px 13px 12px; border-bottom:3px solid #1a9ae2; }
+html body #index table.index td, html body #index table.index td.name, html body #index table.index th.name { font-family:Arial,"DejaVu Sans",sans-serif; font-style:normal; }
+html body #index table.index td, html body #index table.index td.name { font-size:14px; padding:12px; border-color:#e3eaf5; }
+html body #index table.index td.name a { color:#0941be; }
+html body #index table.index tr.region:hover { background:#e7efff; }
+html body #index th .arrows { display:inline-block; width:13px; height:13px; margin-left:6px; font-size:0; vertical-align:middle; }
+html body #index th .arrows::after { content:""; }
+html body #index th[aria-sort="ascending"] .arrows { background-image:url(up.svg); }
+html body #index th[aria-sort="descending"] .arrows { background-image:url(down.svg); }
+html body header h2 a.button, html body header button { color:#0941be; background:#fff; border:1px solid #cbd8ed; border-radius:3px; font:14px Arial,"DejaVu Sans",sans-serif; padding:5px 10px; }
+html body header h2 a.button.current { color:#fff; background:#0a42be; border:1px solid #0a42be; }
+html body #filter_container #filter { color:#172b4d; background:#fff; border:1px solid #cbd8ed; border-radius:3px; padding:6px 9px; }
+html body #filter_container label, html body header p.text, html body footer .content { color:#526580; font-style:normal; }
+html body #help_panel { color:#172b4d; background:#fff; border:1px solid #cbd8ed; }
+html body #source p .n, html body #source p .n a { color:#637895; }
+html body #source p .t { color:#172b4d; border-color:#fff; }
+html body #source p .t:hover { background:#f2f5fd; }
+html body #source p .t .str, html body #source p .t .fst { color:#0451a5; }
+html body #source p .t .com { color:#39744c; }
+html body #source p.mis.show_mis .t, html body #source p.mis.mis2.show_mis .t { background:#ffaaaa; }
+html body #source p.run.show_run .t, html body #source p.run.run2.show_run .t { background:#ccffcc; }
+html body #source p.par.show_par .t, html body #source p.par.par2.show_par .t { background:#ffffcc; }
+html body #source p.exc.show_exc .t, html body #source p.exc.exc2.show_exc .t { background:#e6e6e6; }
+html body header button.run, html body header button.run.show_run { background:#ccffcc; color:#172b4d; }
+html body header button.mis, html body header button.mis.show_mis { background:#ffaaaa; color:#172b4d; }
+html body header button.par, html body header button.par.show_par { background:#ffffcc; color:#172b4d; }
+html body header button.exc, html body header button.exc.show_exc { background:#e6e6e6; color:#172b4d; }
+@media(max-width:900px) { html body table.coverage { display:block; max-width:100%; overflow-x:auto; } html body { padding:0 16px 20px; } html body .tkur-header { margin:0 -16px; padding:10px 16px; } html body .breadcrumb { margin:0 -16px 24px; padding:12px 16px; } }
+@media(max-width:540px) { html body .tkur-header { gap:8px 12px; } html body .tkur-header .tkur-logo { width:90px; } html body .tkur-header .tkur-wordmark { font-size:14px; flex-basis:180px; } html body .tkur-product { text-align:left; } html body .footer .right { float:none; display:block; } }
