@@ -1,97 +1,135 @@
-# tkur_coverage — измеренные HTML-отчеты ТЕХКОНСУР
+# tkur_coverage — измеренные HTML-отчеты
 
-> Отдельный исходный компонент. Полная Docker-среда, примеры и испытания: [virangle/tkur_fuzzing](https://github.com/virangle/tkur_fuzzing). Команды ниже с путями `components/`, `examples/` и `tests/` выполняются из корня рекурсивно клонированной среды `tkur_fuzzing`.
+Самостоятельный генератор отчетов **Испытательной лаборатории ООО «ТЕХКОНСУР»**. Повторно выполняет сохраненный корпус и получает реальные LLVM source-based coverage для C/C++ либо coverage.py для Python. Генерация не требует общего репозитория, Docker, Atheris или запущенного фаззера.
 
-Самостоятельная установка: `python3 -m pip install .`; команда `tkur_coverage --help`.
+## Установка из release wheel
 
+Требуется Python >=3.10. Для C/C++ дополнительно нужны согласованные версии clang, llvm-cov и llvm-profdata; проверенная конфигурация — LLVM18 и Python3.12. Зависимость Python — coverage.py7.x.
 
-Компонент повторно выполняет **сохраненный корпус**, получает реальные данные LLVM source-based coverage для C/C++ либо coverage.py для Python и выпускает автономный HTML-отчет. Сводка и header/footer русскоязычные; подробные исходные представления LLVM и coverage.py остаются на языке upstream. Полная локализация upstream **не заявляется**.
-
-## Оформление tkur_jacoco
-
-В версии 0.1.1 используется исходный `report.css`, `tkur.svg` и SVG-иконки из [virangle/tkur_jacoco](https://github.com/virangle/tkur_jacoco/tree/fbd7e252d9a424db1e5a7dd685dd25f520a3db15), commit `fbd7e252d9a424db1e5a7dd685dd25f520a3db15`. Header/footer повторяют структуру реального `ReportPage.java`: логотип, полное название «Испытательная лаборатория ООО \"ТЕХКОНСУР\"», название продукта, время `dd.MM.yyyy HH:mm:ss ±HHmm`, breadcrumb, легенда и компактная таблица. Продукт указан честно как `tkur_coverage 0.1.1`; генераторы — LLVM/coverage.py, не JaCoCo. Исходный шрифт Arial / DejaVu Sans 14px и палитра сохранены; код показывается моноширинным шрифтом.
-
-`assets/report.css` и upstream SVG скопированы byte-for-byte, `assets/adapter.css` адаптирует таблицы и source views LLVM/coverage.py к тому же оформлению без изменения счетчиков, строк и интерактивных data attributes. Стандартная keyboard-иконка coverage.py заменена локальной SVG-иконкой с сохранением toggle ID. Из сводки убраны технические поля, карточки и пояснительные блоки; все служебные данные остаются в JSON. Существующие upstream сведения об авторстве не удаляются. Внешние шрифты, CDN и сетевые ресурсы не требуются.
-
-Точное происхождение, git blob SHA и SHA256 записаны в `assets/provenance.json`. Лицензия upstream JaCoCo — EPL-2.0 (`assets/jacoco-LICENSE.md`), иконок — `assets/lucide-LICENSE.txt`; `assets/NOTICE.txt` сохраняет attribution и описание адаптации. Эти файлы входят в wheel и каждый отчет. Лицензии LLVM/coverage.py сохраняют действие. Вспомогательный `fetch_style.py` получает exact bytes через публичный GitHub blob API; сеть нужна только для разработки, не для генерации или просмотра отчетов.
-
-## Установка
-
-В Ubuntu-контейнере `tkur-dev` (все команды далее внутри `/workspace`):
+Скачайте wheel из [Releases](https://github.com/virangle/tkur_coverage/releases), затем:
 
 ```sh
-python3 -m pip install -e components/tkur_coverage
+python3 -m venv .venv
+. .venv/bin/activate
+python3 -m pip install ./tkur_coverage-0.1.1-py3-none-any.whl
+tkur_coverage --help
 ```
 
-Либо без установки: `PYTHONPATH=/workspace/components/tkur_coverage python3 -m tkur_coverage ...`. Основная команда — `tkur_coverage`; `tkur-coverage` оставлена как дополнительный alias. Требуются Python >=3.10, coverage.py 7.x; для native — совместимые clang/llvm-cov/llvm-profdata. В подготовленном окружении используются clang18/LLVM18 и Python3.12.
+Установка coverage.py выполняется pip как зависимости. Для полностью offline-установки заранее скачайте также совместимый coverage.py wheel и используйте `pip install --no-index --find-links WHEELS_DIR tkur_coverage==0.1.1`. Сам просмотр отчетов не требует сети.
 
-## C и C++
+Из исходного репозитория компонент устанавливается командой `python3 -m pip install .` из его корня. Основная команда — `tkur_coverage`; `python3 -m tkur_coverage` и alias `tkur-coverage` эквивалентны. Release распространяет wheel, не Docker-образ и не архив рабочего окружения. Примеры ниже можно создать локально; в исходном репозитории те же targets доступны в каталоге `examples`.
 
-Отдельный coverage-build нужен **даже если fuzz-build уже имеет sanitizer coverage**:
+## Быстрый старт без исходного репозитория
+
+Команды предназначены для POSIX shell. Создайте рабочий каталог вне установленного пакета:
 
 ```sh
-clang-18 -O0 -g -fprofile-instr-generate -fcoverage-mapping target.c -o target-c
-clang++-18 -O0 -g -fprofile-instr-generate -fcoverage-mapping target.cpp -o target-cpp
+mkdir -p coverage-demo/native coverage-demo/python coverage-demo/corpus coverage-demo/build
+cd coverage-demo
+printf A > corpus/A
+printf B > corpus/B
 ```
 
-Бинарь должен принять путь единственного входного файла: `BINARY INPUT`. Для libFuzzer-совместимой цели соберите target с `-fsanitize=fuzzer-no-link -fprofile-instr-generate -fcoverage-mapping`, затем прилинкуйте соответствующую tkur_libfuzzer runtime. Это ABI согласовано с native-компонентом. Готовые fuzz-бинарники без LLVM profile instrumentation для этого отчета непригодны.
+### C и C++: бинарь с ABI `BINARY INPUT`
+
+Создайте `native/target.c`:
+
+```c
+#include <stdio.h>
+static int classify(int byte) {
+    if (byte == 'A') return 10;
+    if (byte == 'B') return 20;
+    return 30;
+}
+int main(int argc, char **argv) {
+    if (argc != 2) return 2;
+    FILE *input = fopen(argv[1], "rb");
+    if (!input) return 3;
+    int byte = fgetc(input);
+    fclose(input);
+    return classify(byte) == 999;
+}
+```
+
+Создайте **отдельный coverage-build**, даже если fuzz-build имеет sanitizer coverage:
 
 ```sh
+clang-18 -O0 -g -fprofile-instr-generate -fcoverage-mapping native/target.c -o build/target-c
+clang++-18 -x c++ -O0 -g -fprofile-instr-generate -fcoverage-mapping native/target.c -o build/target-cpp
+
 LLVM_COV=llvm-cov-18 LLVM_PROFDATA=llvm-profdata-18 \
-python3 -m tkur_coverage native \
-  --binary /workspace/build/target-c \
-  --corpus /workspace/corpus/c \
-  --sources-dir /workspace/examples/c \
-  --language C \
-  --output /workspace/artifacts/reports/c
-```
+tkur_coverage native --binary build/target-c --corpus corpus \
+  --sources-dir native --language C --output reports/c
 
-Для C++ используйте `--language C++` и свой binary/source root. `--binary-arg=-flag=value` можно повторять: аргументы ставятся перед INPUT. По умолчанию timeout каждого процесса 30 секунд, настраивается `--timeout`. Неуспешные replay фиксируются в JSON; нет гарантии, что аварийно завершившийся процесс успел записать `.profraw`. Если нет ни одного профиля, отчет не создается и CLI возвращает 1. Профили успешных и сохранивших профиль неуспешных процессов объединяются; нарушения целостности профилей являются ошибкой, а не поводом подставлять нули.
-
-`--sources-dir` ограничивает отчет реально инструментированными файлами внутри этого дерева. Источники должны оставаться доступны во время генерации; HTML затем содержит строки исходного кода и работает автономно. Для воспроизводимости сохраняются бинарный SHA256, хеши corpus inputs, версии инструментов и исходные LLVM JSON/profiles. Native ABI предусматривает один instrumented binary, не набор динамически загруженных coverage objects.
-
-## Python
-
-Цель: `MODULE:CALLABLE`, где callable принимает `bytes`. Импорт начинается **после** `coverage.start()`, затем каждый regular corpus file передается функции. Уже импортированную цель API отвергает, чтобы не скрывать потерю import-time coverage; предпочтителен отдельный CLI-процесс.
-
-```sh
-PYTHONPATH=/workspace/components/tkur_coverage:/workspace/components/tkur_atheris:/workspace/examples/python \
-python3 -m tkur_coverage python \
-  --target branch_target:TestOneInput \
-  --corpus /workspace/examples/python/corpus \
-  --source /workspace/examples/python \
-  --output /workspace/artifacts/reports/python
-```
-
-`--source` — каталог, не dotted module. В него следует включить именно измеряемый код, а не весь workspace/venv. Обычные `Exception` от callback отмечаются в JSON и replay продолжается; `SystemExit`/`KeyboardInterrupt` не подавляются. Цель выполняется в процессе CLI, поэтому бесконечный цикл/`os._exit` не изолируются: запускайте в контейнере с внешним timeout. Компонент не заменяет sandbox. coverage.py измеряет Python statements и branch arcs, а не нативные строки библиотек.
-
-## Артефакты и смысл метрик
-
-Каталог вывода должен быть новым либо пустым и не пересекаться с корпусом. Существующие отчеты и пользовательские данные не перезаписываются. Пустой корпус отвергается. Регулярные файлы собираются рекурсивно; symlink-файлы не воспроизводятся.
-
-- `index.html` — компактная сводная таблица в оформлении tkur_jacoco, время генерации с часовым поясом и навигация к исходным файлам.
-- `source/index.html` — upstream line-by-line HTML с добавленными scoped header/footer; original source views, таблицы и attribution сохранены.
-- `report.json` — схема v1: `measurement: corpus-replay-source-coverage`, `fuzzing_feedback: false`, `metrics`, SHA256/размер входов, список исходников/target, результаты каждого replay, версии и дата.
-- `source-files/*` — точные байты измеренных исходников; исходный путь, относительный путь снимка и SHA256 записаны в `report.json`. Это не переформатированные копии HTML.
-- Native: `llvm-export.json`, `profiles/*.profraw`, `profiles/merged.profdata`.
-- Python: `coverage.json`, `.coverage`; скопированные offline CSS/JS coverage.py.
-
-Проценты сводки = `100 * covered / total` из соответствующего engine JSON, округлены до 2 знаков. Нулевой знаменатель отображается как «н/д», не как фиктивные 100%. LLVM line coverage и Python statement coverage имеют разные определения; ветви LLVM и coverage.py также нельзя сравнивать напрямую.
-
-**Онлайн `cov`/`ft` фаззера не являются процентами покрытия исходных строк.** Эти отчеты измеряют только сохраненный корпус при конкретном replay, не все входы, когда-либо исполненные фаззером. `report.json` не выдумывает fuzzing feedback, а явно устанавливает `fuzzing_feedback: false`. Время генерации — не время всей fuzz-сессии. Наличие report не означает отсутствие ошибок цели: смотрите список `replay` в JSON.
-
-## Проверка реальными инструментами
-
-```sh
 LLVM_COV=llvm-cov-18 LLVM_PROFDATA=llvm-profdata-18 \
-TKUR_REPORT_ARTIFACTS=/workspace/artifacts/coverage-fixtures \
-python3 -m pytest -q tests/coverage
+tkur_coverage native --binary build/target-cpp --corpus corpus \
+  --sources-dir native --language C++ --output reports/cpp
 ```
 
-Тесты действительно компилируют и запускают C/C++ ветвящиеся targets и запускают Python target в свежем процессе, сравнивают все сводные метрики с raw JSON, проверяют известные missing lines, HTML escaping, локальные ссылки, branding, сохранение исходного attribution и отсутствие внешних assets. При отсутствии toolchain тест native помечается skip, а не выдается за успешное измерение. Указанный каталог сохранения fixture reports должен быть новым; повторный запуск используйте с другим каталогом.
+Результат — `reports/c/index.html` и `reports/cpp/index.html`. Оба бинаря принимают путь одного файла и завершаются после его обработки. LibFuzzer-compatible binaries также подходят, если собраны с `-fprofile-instr-generate -fcoverage-mapping` и поддерживают replay одного INPUT; сам генератор не требует конкретной fuzzing runtime. Обычный fuzz-binary без profile instrumentation непригоден.
 
-## Лицензии
+`--binary-arg=-flag=value` можно повторять: аргументы ставятся перед INPUT. Timeout каждого процесса по умолчанию 30 секунд, настраивается положительным конечным `--timeout`. Неуспешный replay фиксируется в JSON; аварийно завершившийся процесс может не успеть сохранить профиль. Если нет ни одного LLVM-профиля, CLI возвращает 1, не подставляя фиктивные метрики. Некорректный профиль является ошибкой.
 
-Код адаптации оформления и генератора распространяется по EPL-2.0; см. LICENSE. Оригинальные CSS/шаблоны JaCoCo — EPL-2.0; SVG-иконки имеют собственные ISC/MIT notices. Логотипы не перелицензируются. Полные notices находятся в tkur_coverage/assets/.
+`--sources-dir` ограничивает отчет инструментированными файлами внутри заданного дерева. Исходники должны оставаться доступны во время генерации; затем HTML содержит строки и открывается автономно. Поддерживается один instrumented binary, не набор динамически загружаемых coverage objects.
 
-Для validate_package.py сначала создайте wheel: `python -m build --wheel --outdir wheel-check`.
+### Python: callback принимает `bytes`
+
+Создайте `python/target.py`:
+
+```python
+def TestOneInput(data):
+    if data == b"A":
+        result = 10
+    elif data == b"B":
+        result = 20
+    else:
+        result = 30
+    return result
+```
+
+Запуск из каталога `coverage-demo`:
+
+```sh
+PYTHONPATH="$PWD/python" tkur_coverage python --target target:TestOneInput \
+  --corpus corpus --source python --output reports/python
+```
+
+Результат — `reports/python/index.html`. Импорт начинается после `coverage.start()`, затем каждый вход передается callback. Уже импортированный target API отвергает: используйте отдельный CLI-процесс для честного import-time coverage. `--source` — каталог, не dotted module; не указывайте весь venv.
+
+Обычные `Exception` от callback записываются в JSON, replay продолжается. `SystemExit`/`KeyboardInterrupt` не подавляются. Python-target выполняется в процессе CLI: бесконечный цикл и `os._exit` не изолируются. Для недоверенных целей нужен внешний sandbox и timeout, например `timeout 60s env PYTHONPATH="$PWD/python" tkur_coverage python ...`. Компонент не заменяет sandbox и измеряет Python statements/branch arcs, не нативные строки библиотек.
+
+## Данные и ограничения
+
+Каталог вывода должен быть новым либо пустым и не пересекаться с корпусом; пользовательские файлы и существующие отчеты не перезаписываются. Пустой корпус отвергается. Регулярные файлы собираются рекурсивно; symlink-файлы пропускаются.
+
+- `index.html` — компактная измеренная сводка и навигация.
+- `source/index.html` — подробные исходные представления LLVM/coverage.py, оформленные в общем стиле.
+- `report.json` — схемаv1, `measurement: corpus-replay-source-coverage`, `fuzzing_feedback: false`, версии инструментов, времяUTC, метрики, SHA256/размер входов и результаты каждого replay.
+- `source-files/*` — точные байты измеренных исходников; исходные пути, SHA256 и пути снимков находятся в JSON.
+- Native: `llvm-export.json`, `profiles/*.profraw`, `profiles/merged.profdata`, SHA256 бинаря в метаданных.
+- Python: `coverage.json`, `.coverage`, локальные CSS/JS.
+
+Проценты сводки = `100 * covered / total`, округлены до 2 знаков. При нулевом знаменателе показано «н/д», не 100%. Для Python quickstart известный результат — 6/7 statements и 3/4 branches; он проверяется по raw JSON, а не подставляется в отчет.
+
+**Онлайн `cov`/`ft` фаззера — не проценты покрытия строк.** Отчет измеряет только сохраненный корпус при replay, не все когда-либо выполненные входы. LLVM lines и Python statements, а также определения branch coverage различаются и не являются межъязыковым рейтингом. Наличие отчета не гарантирует отсутствие ошибок: смотрите `replay` в JSON.
+
+## Оформление и лицензии
+
+Стиль основан на реальных `report.css`, `tkur.svg`, SVG-иконках и структуре `ReportPage.java` из [virangle/tkur_jacoco](https://github.com/virangle/tkur_jacoco/tree/fbd7e252d9a424db1e5a7dd685dd25f520a3db15), pinned commit `fbd7e252d9a424db1e5a7dd685dd25f520a3db15`. Исходные CSS/SVG сохранены byte-for-byte; адаптер оформляет таблицы и source views без изменения данных. Шрифт Arial / DejaVu Sans 14px, код моноширинный. Header содержит логотип, полное название лаборатории, честное название `tkur_coverage 0.1.1` и время с часовым поясом. Внешние assets/CDN не используются.
+
+Сводка и оболочка русскоязычные; полная локализация upstream LLVM/coverage.py не заявляется. Реальные copyright/attribution не удаляются. Git blob SHA, SHA256 и пути происхождения находятся в `tkur_coverage/assets/provenance.json`; они копируются в каждый отчет.
+
+Код генератора и адаптации — EPL-2.0, см.`LICENSE`. Оригинальные JaCoCo CSS/шаблоны — EPL-2.0; иконки — ISC/MIT по их notices. Логотип не перелицензируется. `tkur_coverage/assets/jacoco-LICENSE.md`, `lucide-LICENSE.txt`, `NOTICE.txt` входят в wheel и каждый отчет; лицензии LLVM/coverage.py сохраняют действие.
+
+## Сборка и проверка wheel разработчиком
+
+Из корня данного исходного репозитория:
+
+```sh
+python3 -m pip wheel --no-deps . --wheel-dir wheel-check
+python3 validate_package.py
+```
+
+Проверка подтверждает наличие и byte-for-byte точность обязательных стилевых ресурсов и notices в wheel. Для функционального smoke test выполните standalone quickstart выше: сравните `report.json` с `llvm-export.json`/`coverage.json`, проверьте открытие source pages и известную невыполненную ветку для входов A/B. Репозиторий не требует отсутствующей внешней тестовой среды.
+
+Также доступен `smoke_standalone.py`: запустите его установленным из wheel Python из каталога вне исходного дерева. Он использует только локальные `examples`, компилирует C/C++ цели, запускает Python callback и сравнивает метрики с настоящими engine JSON. Результаты сохраняются в `standalone-check` рядом со скриптом; этот каталог должен отсутствовать перед первым запуском либо иметь новые имена отчетов при повторении. Скрипт намеренно отвергает импорт пакета прямо из исходного дерева, чтобы не выдавать source-tree проверку за проверку wheel.

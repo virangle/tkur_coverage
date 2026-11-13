@@ -3,6 +3,8 @@ dist/
 artifacts/
 style-preview/
 wheel-check/
+standalone-check/
+standalone-venv/
 __pycache__/
 *.egg-info/
 *.pyc
