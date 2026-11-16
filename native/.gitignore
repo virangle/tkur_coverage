@@ -1,4 +1,7 @@
 /build/
+/evidence/
+/.tools/
+/tools/node_modules/
+/tools/replay-host/bin/
+/tools/replay-host/obj/
 /artifacts/
-*.profraw
-*.profdata

@@ -23,13 +23,14 @@ type sourceRange struct {
 	Count      int64
 }
 type sourceFile struct {
-	Name     string            `json:"original"`
-	Snapshot string            `json:"snapshot"`
-	HTML     string            `json:"html"`
-	SHA256   string            `json:"sha256"`
-	Metrics  map[string]metric `json:"metrics"`
-	Bytes    []byte            `json:"-"`
-	Ranges   []sourceRange     `json:"-"`
+	Name            string            `json:"original"`
+	Snapshot        string            `json:"snapshot"`
+	HTML            string            `json:"html"`
+	SHA256          string            `json:"sha256"`
+	Metrics         map[string]metric `json:"metrics"`
+	ProducerMetrics map[string]metric `json:"producer_metrics,omitempty"`
+	Bytes           []byte            `json:"-"`
+	Ranges          []sourceRange     `json:"-"`
 }
 
 func measured(hit, total int64) (metric, error) {

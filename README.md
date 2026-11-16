@@ -4,7 +4,7 @@
 
 Доступны два самостоятельных интерфейса:
 
-- **Native 0.2.0** — готовый Linux x86_64 executable без Python для импорта измеренного Rust/LLVM и Go coverage. Сам не запускает цели. [Установка, сборка и команды native](native/README.md).
+- **Native 0.3.0** — готовый Linux x86_64 executable без Python для импорта измеренного Rust/LLVM, Go, JavaScript/TypeScript (Istanbul JSON) и C#/.NET (Coverlet JSON) coverage. Сам не запускает цели. Сохранены backend-команды 0.2.0. [Установка, сборка и команды native](native/README.md).
 - **Python 0.1.1** — сохраненный совместимый wheel: повторное выполнение корпуса для C/C++ (LLVM) и Python (coverage.py). Его API и версия не изменены; инструкции ниже относятся к нему.
 
 Оба варианта используют одинаковые проверенные assets и оформление. Команда у них называется `tkur_coverage`: выберите нужный бинарник в PATH либо используйте полный путь; Python-вариант всегда доступен как `python3 -m tkur_coverage`. Native release содержит только compiled executable и обязательные лицензии, без исходников/скриптов/Docker.

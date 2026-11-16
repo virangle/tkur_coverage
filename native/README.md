@@ -1,4 +1,36 @@
-# tkur_coverage native 0.2.0
+# tkur_coverage native 0.3.0
+
+This project preserves native0.2 Go/LLVM imports and adds **Istanbul JSON** and **Coverlet JSON**. Existing Python wheel0.1.1 remains compatible and unchanged. No XML backend is advertised. Release assets contain compiled binaries and legal notices only; producer helpers below are developer source tooling.
+
+## JavaScript / TypeScript measured imports
+
+```sh
+./tkur_coverage javascript --istanbul-json coverage.json --source-root /project/src --output /reports/js
+./tkur_coverage typescript --istanbul-json remapped.json --source-root /project/src --output /reports/ts --provenance replay.json
+```
+
+The input must be a complete Istanbul **coverage map**, not a summary. Statements count instrumented IDs; functions count IDs; branches count all individual arm slots; lines aggregate unique statement **start** lines with maximum hit count (Istanbul3.2.2 behavior). Empty denominators are null/н/д. Native percentages round to nearest two decimals; Istanbul itself truncates, so compare numerators/denominators rather than formatted percentages.
+
+JS columns are zero-based UTF-16 code units, converted to one-based UTF-8 byte intervals in exact snapshots. Invalid/out-of-range/surrogate-splitting columns fail. Source color intervals combine measured statements/branch arms; function entry hits do not color an entire function body. Istanbul implicit else slots have no coordinates (`{start:{},end:{}}`): their real denominator is counted, **no source span is invented**.
+
+TypeScript input must already be remapped externally to original TS. This importer does not parse/fetch source maps, execute JS, or trust embedded map paths. `tools/replay-istanbul.cjs` demonstrates a controlled replay of the **same exported fuzz function** using Node24.22.3, AST instrumentation6.0.3/coverage3.2.2/source-maps5.0.6 and TS5.9.3. Compiler5.9.3 is an intentional compatible pin shared with the JS fuzzer, not a claim to latest TS. The source-tree producer retains generated and remapped coverage, original compiler map and separately resolved map plus generated JS, hashes/versions/corpus inputs. Its controlled compiler map is validated before remapping; it is not an arbitrary hostile-source-map loader.
+
+`--istanbul-origin ast` is default. Explicit `v8` accepts externally converted V8/Istanbul JSON but records **line-as-statement records and V8 block-range branches**, not AST equivalents; raw V8 conversion/provenance belongs to the external producer. The product does not claim a native raw V8 importer. Real acceptance examples use AST mode.
+
+## C#/.NET measured imports
+
+```sh
+./tkur_coverage dotnet --coverlet-json coverage.json --source-root /project --output /reports/dotnet --provenance replay.json
+```
+
+Input: native Coverlet10.1.1 JSON (module→document→class→method→Lines/Branches), not Cobertura/OpenCover. Physical `lines` are **derived unique executable physical source lines**, hits=max per-method line hits. `producer_metrics.lines` preserves Coverlet's original **method-line entries**; lambdas/methods sharing a physical line can make these denominators differ. Branches count reachable slots using exact module/document/class/method/Line/Offset/EndOffset/Path/Ordinal identities. `IsReachable:false` is excluded, missing flag defaults true exactly as the producer model. Source rendering uses whole measured lines; missed branches mark partial lines, with **no invented statement spans or IL-offset-to-column conversion**. No .NET statement metric exists. Across different modules the same physical file merges line hits but retains separate method branch instances.
+
+Coverlet's OpenCover sequence points use synthetic sc1/ec2 columns and its Cobertura loses branch identity; neither format is advertised as supported. Source coverage is collected on the original target+portable PDB through an independent bounded replay; SharpFuzz live feedback is not used. All target methods in the measured assembly remain in its denominator unless explicitly filtered, including unexecuted Crash/Hang example methods.
+
+Pinned producer tools are developer-only: SDK10.0.404/runtime10.0.15 and scoped `dotnet tool install coverlet.console --version 10.1.1 --tool-path .tools`. When the application DLL itself is passed as primary assembly, actual validation needed `--include-test-assembly` (otherwise an empty result was honestly rejected). No rebuild may occur while instrumented. Final validation host invokes the real public Fuzz(byte[]) and records loaded assembly path/hash **during** instrumentation; hash differs then and equals original after Coverlet restoration. The portable producer commands below record this proof; historical private orchestration scripts and measured artifact trees are not required or shipped as standalone tooling.
+
+Both new JSON formats reject duplicate keys, case-shadowed critical fields, invalid UTF-8, missing/null required tuples/maps, unsafe counts/paths/coordinates and aliases. Counters are nonnegative integers ≤2^53−1, rejected rather than rounded. Optional external JSON provenance is retained byte-for-byte and hashed, not followed as filesystem read instructions. `execution_owned_by: external` is always explicit; importer does not invent replay statuses/counts. Importer runtime needs no producer tools, Python or network.
+
 
 Compiled standalone source-coverage **importer**, no Python dependency. Complements the existing Python tkur_coverage0.1.1; it does not replace that version's replay commands or Python coverage.py support. No target code is executed by this executable. Imports external measured profiles and explicitly records `execution_owned_by: external`, not invented replay outcomes.
 
@@ -10,6 +42,63 @@ GOTOOLCHAIN=local CGO_ENABLED=0 go build -trimpath -o build/tkur_coverage .
 ```
 
 Go>=1.24 needed only to build. The resulting executable embeds its local CSS/SVG/notices and needs neither Python nor network. No external module dependencies. Consumers need LLVM/Go toolchains only when collecting coverage before import.
+
+## Portable managed producer commands
+
+Run from this `native` directory with pinned `node`, `npm`, `dotnet` and optionally `go` on PATH. No `/opt` or original development checkout is required. These helpers execute trusted target code and are **not a target sandbox**. Choose absolute target/corpus paths yourself. Output directories must be new and disjoint from sources; do not overwrite previous measurements.
+
+### Single-file JS or TS replay
+
+The target must be self-contained CommonJS JS or TS compiled by the helper to CommonJS and export `fuzz(Buffer)` (sync or awaited Promise). Multi-module/bundled projects should produce their own measured/remapped Istanbul map using their pinned build pipeline instead of treating this small demonstration as a universal loader.
+
+```sh
+npm ci --prefix tools
+ROOT="$PWD"
+TARGET=/absolute/path/to/target.ts
+CORPUS=/absolute/path/to/flat-corpus
+MEASURE=/absolute/path/to/new-measure
+REPORT=/absolute/path/to/new-report
+node tools/replay-istanbul.cjs ts "$TARGET" "$CORPUS" "$MEASURE"
+# Use `js` + `javascript` for a JavaScript target.
+"$ROOT/build/tkur_coverage" typescript --istanbul-json "$MEASURE/istanbul.json" \
+  --source-root "$(dirname "$TARGET")" --output "$REPORT" \
+  --provenance "$MEASURE/provenance.json"
+```
+
+### .NET replay and instrumentation proof
+
+Build your original target assembly with portable PDB **before** running Coverlet. Choose a public static `void METHOD(byte[])`; its logic should be the same target used by your fuzzer. The included generic replay host loops the selected corpus, not a fuzz loop. Use an isolated copy of all target runtime dependencies; do not instrument an actively used build. The commands below use ordinary no-space temporary paths because Coverlet passes `--targetargs` through its own argument parser; other path layouts require appropriate installed-version quoting.
+
+```sh
+ROOT="$PWD"
+DOTNET=$(command -v dotnet)
+dotnet tool install coverlet.console --version 10.1.1 --tool-path "$ROOT/.tools"
+dotnet build tools/replay-host/replay-host.csproj -c Release -o "$ROOT/build/replay-host"
+# Target.dll/.pdb and dependencies already built/copied into /absolute/isolated-build.
+ASSEMBLY=/absolute/isolated-build/Target.dll
+SOURCE_ROOT=/absolute/path/to/target-sources
+CORPUS=/absolute/path/to/flat-corpus
+MEASURE=/absolute/path/to/new-net-measure
+REPORT=/absolute/path/to/new-net-report
+TYPE=Example.Target
+METHOD=Fuzz
+HOST="$ROOT/build/replay-host/replay-host.dll"
+mkdir "$MEASURE"
+BEFORE=$(sha256sum "$ASSEMBLY"); BEFORE=${BEFORE%% *}
+# Capture observed tools, not a hardcoded claimed package/runtime version.
+dotnet --info > "$MEASURE/dotnet-info.txt"
+"$ROOT/.tools/coverlet" --version > "$MEASURE/coverlet-version.txt"
+"$ROOT/.tools/coverlet" "$ASSEMBLY" --target "$DOTNET" \
+  --targetargs "$HOST $ASSEMBLY $CORPUS $MEASURE/loaded.json $TYPE $METHOD" \
+  --include-test-assembly --format json --output "$MEASURE/coverage.json" \
+  > "$MEASURE/coverlet.log" 2>&1
+node -e 'const f=require("fs"),d=process.argv[1];f.writeFileSync(d+"/versions.json",JSON.stringify({dotnet_info:f.readFileSync(d+"/dotnet-info.txt","utf8"),coverlet:f.readFileSync(d+"/coverlet-version.txt","utf8")},null,2))' "$MEASURE"
+node tools/net-provenance.cjs "$MEASURE" "$ASSEMBLY" "$HOST" "$BEFORE" "$MEASURE/versions.json"
+"$ROOT/build/tkur_coverage" dotnet --coverlet-json "$MEASURE/coverage.json" \
+  --source-root "$SOURCE_ROOT" --output "$REPORT" --provenance "$MEASURE/provenance.json"
+```
+
+Adjust Coverlet `--include`/`--exclude` filters for your assembly; without explicit filters, dependencies with source/PDB may also be measured and their source paths must lie under the selected source root. The external helper records loaded assembly/source hashes and observed input returns; the importer still owns no execution and does not fabricate statuses. Tool installation/build above require network/SDK as appropriate; importing an already produced JSON requires only the compiled renderer.
 
 ## Rust / LLVM import
 
@@ -73,7 +162,7 @@ Online fuzz `cov`/`ft`/interesting-input counters are not source coverage percen
 
 ## Exact shared style and legal notices
 
-Header/footer/table DOM follows existing tkur_coverage and actual tkur_jacoco `ReportPage.java`. Full laboratory title, real product `tkur_coverage0.2.0`, generation timestamp/timezone and honest LLVM/Go tool attribution. Exact upstream `report.css` and SVG logo/icons from tkur_jacoco commit `fbd7e252d9a424db1e5a7dd685dd25f520a3db15`; existing fixed `adapter.css` preserved. `native.css` only adapts numbered source ranges. No CDN/fonts/network, no dashboards/cards or obsolete license boilerplate.
+Header/footer/table DOM follows existing tkur_coverage and actual tkur_jacoco `ReportPage.java`. Full laboratory title, real product `tkur_coverage0.3.0`, generation timestamp/timezone and honest LLVM/Go tool attribution. Exact upstream `report.css` and SVG logo/icons from tkur_jacoco commit `fbd7e252d9a424db1e5a7dd685dd25f520a3db15`; existing fixed `adapter.css` preserved. `native.css` only adapts numbered source ranges. No CDN/fonts/network, no dashboards/cards or obsolete license boilerplate.
 
 Original CSS/SVG notices and provenance are embedded and copied unchanged. EPL-2.0 for generator/adaptation and JaCoCo materials; Lucide/Feather ISC/MIT notices retained, logos not relicensed. See LICENSE and assets/{jacoco-LICENSE.md,lucide-LICENSE.txt,NOTICE.txt,provenance.json}. Independently implemented Go profile parser has no x/tools vendored source.
 

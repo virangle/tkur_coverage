@@ -43,7 +43,7 @@ type sourceLine struct {
 	Markup template.HTML
 }
 
-var pageTemplate = template.Must(template.New("page").Parse(`<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{.Title}}</title><link rel="stylesheet" href="{{.Assets}}/report.css"><link rel="stylesheet" href="{{.Assets}}/adapter.css"><link rel="stylesheet" href="{{.Assets}}/native.css"><link rel="icon" href="{{.Assets}}/report.svg" type="image/svg+xml"></head><body><div class="tkur-header"><img class="tkur-logo" src="{{.Assets}}/tkur.svg" alt="Логотип ТЕХКОНСУР"><span class="tkur-wordmark">Испытательная лаборатория ООО &#34;ТЕХКОНСУР&#34;</span><div class="tkur-product"><span class="tkur-product-name">tkur_coverage 0.2.0</span><span class="tkur-product-description">ОТЧЁТ О ПОКРЫТИИ КОДА</span><span class="tkur-created">Сформирован: {{.Timestamp}}</span></div></div><div class="breadcrumb" id="breadcrumb">{{if .Home}}<a class="el_report" href="{{.Home}}">Покрытие кода</a> &gt; <span class="el_source">{{.Title}}</span>{{else}}<span class="info"><a class="el_source" href="source/index.html">Исходные файлы</a></span><span class="el_report">Покрытие кода</span>{{end}}</div><h1>{{.Title}}</h1><div class="tkur-legend"><span class="tkur-covered">Покрыто</span><span class="tkur-partial">Частично</span><span class="tkur-missed">Не покрыто</span></div>{{if .Lines}}<div class="native-source"><table class="native-code"><tbody>{{range .Lines}}<tr id="L{{.Number}}"><td class="native-number"><a href="#L{{.Number}}">{{.Number}}</a></td><td><pre>{{.Markup}}</pre></td></tr>{{end}}</tbody></table></div>{{else}}<div class="native-table"><table class="coverage" cellspacing="0"><thead><tr><td>Элемент</td>{{range .Columns}}<td class="ctr1">{{.Label}}: пропущено</td><td class="ctr2">Всего</td><td class="ctr2">Покрытие</td>{{end}}</tr></thead><tfoot><tr><td>Всего</td>{{range .Totals}}<td class="ctr1">{{.Missed}}</td><td class="ctr2">{{.Total}}</td><td class="ctr2">{{.Percent}}</td>{{end}}</tr></tfoot><tbody>{{range .Rows}}<tr><td><a class="el_source" href="{{.Link}}">{{.Label}}</a></td>{{range .Cells}}<td class="ctr1">{{.Missed}}</td><td class="ctr2">{{.Total}}</td><td class="ctr2">{{.Percent}}</td>{{end}}</tr>{{end}}</tbody></table></div>{{end}}<div class="footer"><span class="right">Создано с помощью {{.Engine}}</span><span class="tkur-owner">Испытательная лаборатория ООО &#34;ТЕХКОНСУР&#34; · tkur_coverage</span></div></body></html>`))
+var pageTemplate = template.Must(template.New("page").Parse(`<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{.Title}}</title><link rel="stylesheet" href="{{.Assets}}/report.css"><link rel="stylesheet" href="{{.Assets}}/adapter.css"><link rel="stylesheet" href="{{.Assets}}/native.css"><link rel="icon" href="{{.Assets}}/report.svg" type="image/svg+xml"></head><body><div class="tkur-header"><img class="tkur-logo" src="{{.Assets}}/tkur.svg" alt="Логотип ТЕХКОНСУР"><span class="tkur-wordmark">Испытательная лаборатория ООО &#34;ТЕХКОНСУР&#34;</span><div class="tkur-product"><span class="tkur-product-name">tkur_coverage 0.3.0</span><span class="tkur-product-description">ОТЧЁТ О ПОКРЫТИИ КОДА</span><span class="tkur-created">Сформирован: {{.Timestamp}}</span></div></div><div class="breadcrumb" id="breadcrumb">{{if .Home}}<a class="el_report" href="{{.Home}}">Покрытие кода</a> &gt; <span class="el_source">{{.Title}}</span>{{else}}<span class="info"><a class="el_source" href="source/index.html">Исходные файлы</a></span><span class="el_report">Покрытие кода</span>{{end}}</div><h1>{{.Title}}</h1><div class="tkur-legend"><span class="tkur-covered">Покрыто</span><span class="tkur-partial">Частично</span><span class="tkur-missed">Не покрыто</span></div>{{if .Lines}}<div class="native-source"><table class="native-code"><tbody>{{range .Lines}}<tr id="L{{.Number}}"><td class="native-number"><a href="#L{{.Number}}">{{.Number}}</a></td><td><pre>{{.Markup}}</pre></td></tr>{{end}}</tbody></table></div>{{else}}<div class="native-table"><table class="coverage" cellspacing="0"><thead><tr><td>Элемент</td>{{range .Columns}}<td class="ctr1">{{.Label}}: пропущено</td><td class="ctr2">Всего</td><td class="ctr2">Покрытие</td>{{end}}</tr></thead><tfoot><tr><td>Всего</td>{{range .Totals}}<td class="ctr1">{{.Missed}}</td><td class="ctr2">{{.Total}}</td><td class="ctr2">{{.Percent}}</td>{{end}}</tr></tfoot><tbody>{{range .Rows}}<tr><td><a class="el_source" href="{{.Link}}">{{.Label}}</a></td>{{range .Cells}}<td class="ctr1">{{.Missed}}</td><td class="ctr2">{{.Total}}</td><td class="ctr2">{{.Percent}}</td>{{end}}</tr>{{end}}</tbody></table></div>{{end}}<div class="footer"><span class="right">Создано с помощью {{.Engine}}</span><span class="tkur-owner">Испытательная лаборатория ООО &#34;ТЕХКОНСУР&#34; · tkur_coverage</span></div></body></html>`))
 
 func cells(metrics map[string]metric, cols []column) []cell {
 	var out []cell
@@ -243,7 +243,9 @@ func writeReport(o options, files []sourceFile, raw, provenance []byte) error {
 		return err
 	}
 	rawName := "raw/llvm-export.json"
-	if strings.HasPrefix(o.Engine, "Go") {
+	if o.Format != "" {
+		rawName = managedRaw(o)
+	} else if strings.HasPrefix(o.Engine, "Go") {
 		rawName = "raw/coverage.out"
 	}
 	if err := os.WriteFile(filepath.Join(output, rawName), raw, 0644); err != nil {
@@ -293,7 +295,25 @@ func writeReport(o options, files []sourceFile, raw, provenance []byte) error {
 		return err
 	}
 	meta := map[string]any{"schema_version": 2, "product": "tkur_coverage " + version, "engine": o.Engine, "generated_at": now.UTC().Format(time.RFC3339), "measurement": "imported-source-coverage", "measurement_origin": "imported-engine-output", "execution_owned_by": "external", "fuzzing_feedback": false, "source_root": o.Root, "metrics": totals, "source_snapshots": files, "raw_data": map[string]string{"path": rawName, "sha256": digest(raw)}}
-	if strings.HasPrefix(o.Engine, "Go") {
+	if o.Format != "" {
+		meta["metric_semantics"] = managedSemantics(o)
+		if o.Format == "istanbul" {
+			meta["istanbul_origin"] = o.Origin
+		}
+		producer := map[string]metric{}
+		for _, f := range files {
+			for k, m := range f.ProducerMetrics {
+				n, e := addMetric(producer[k], m)
+				if e != nil {
+					return e
+				}
+				producer[k] = n
+			}
+		}
+		if len(producer) > 0 {
+			meta["producer_metrics"] = producer
+		}
+	} else if strings.HasPrefix(o.Engine, "Go") {
 		meta["metric_semantics"] = map[string]string{"statements": "Go NumStmt-weighted source blocks"}
 	} else {
 		meta["metric_semantics"] = map[string]string{"lines": "LLVM measured file summary", "source_view": "LLVM counted non-gap segment intervals; not inferred line hit counters"}

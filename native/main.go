@@ -13,13 +13,14 @@ import (
 	"strings"
 )
 
-const version = "0.2.0"
+const version = "0.3.0"
 
 //go:embed assets/*
 var resources embed.FS
 
 type options struct {
 	Engine, Input, Root, Output, Module, Provenance string
+	Format, Origin                                  string
 }
 
 func main() {
@@ -31,7 +32,7 @@ func main() {
 
 func run(args []string) error {
 	if len(args) == 0 || args[0] == "--help" || args[0] == "-h" {
-		fmt.Println("tkur_coverage " + version + "\nImport measured source coverage (no Python required).\n  rust | llvm-import --llvm-json FILE --source-root DIR --output NEW_DIR\n  go | go-import --profile FILE --module-path MOD --source-root DIR --output NEW_DIR\nOptional: --provenance FILE (external replay/build manifest, copied unchanged)")
+		fmt.Println("tkur_coverage " + version + "\nImport measured source coverage (no Python required).\n  rust | llvm-import --llvm-json FILE --source-root DIR --output NEW_DIR\n  go | go-import --profile FILE --module-path MOD --source-root DIR --output NEW_DIR\n  javascript | typescript --istanbul-json FILE --source-root DIR --output NEW_DIR\n  dotnet --coverlet-json FILE --source-root DIR --output NEW_DIR\nOptional: --provenance FILE (external replay/build manifest, copied unchanged); --istanbul-origin ast|v8")
 		return nil
 	}
 	if args[0] == "--version" {
@@ -44,13 +45,27 @@ func run(args []string) error {
 		o.Engine = "Rust / LLVM"
 	case "llvm-import", "native-import":
 		o.Engine = "LLVM"
+	case "javascript", "istanbul-import":
+		o.Engine = "JavaScript / Istanbul"
+		o.Format = "istanbul"
+	case "typescript":
+		o.Engine = "TypeScript / Istanbul (externally remapped)"
+		o.Format = "istanbul"
+	case "dotnet", "coverlet-import":
+		o.Engine = ".NET / Coverlet"
+		o.Format = "coverlet"
 	case "go", "go-import":
 		o.Engine = "Go / cover"
 	default:
 		return fmt.Errorf("unknown command %q", args[0])
 	}
 	fs := flag.NewFlagSet(args[0], flag.ContinueOnError)
-	if strings.HasPrefix(o.Engine, "Go") {
+	if o.Format == "istanbul" {
+		fs.StringVar(&o.Input, "istanbul-json", "", "complete Istanbul coverage map JSON")
+		fs.StringVar(&o.Origin, "istanbul-origin", "ast", "ast or v8 (different metric semantics)")
+	} else if o.Format == "coverlet" {
+		fs.StringVar(&o.Input, "coverlet-json", "", "native Coverlet coverage JSON")
+	} else if strings.HasPrefix(o.Engine, "Go") {
 		fs.StringVar(&o.Input, "profile", "", "native Go coverage profile")
 		fs.StringVar(&o.Module, "module-path", "", "module import prefix used in profile filenames")
 	} else {
@@ -67,6 +82,9 @@ func run(args []string) error {
 	}
 	if fs.NArg() != 0 || o.Input == "" || o.Root == "" || o.Output == "" {
 		return errors.New("provide input, --source-root and --output; positional arguments are not accepted")
+	}
+	if o.Format == "istanbul" && o.Origin != "ast" && o.Origin != "v8" {
+		return errors.New("istanbul-origin must be ast or v8")
 	}
 	return generate(o)
 }
@@ -93,7 +111,11 @@ func generate(o options) error {
 		return err
 	}
 	var files []sourceFile
-	if strings.HasPrefix(o.Engine, "Go") {
+	if o.Format == "istanbul" {
+		files, err = parseIstanbul(raw, o)
+	} else if o.Format == "coverlet" {
+		files, err = parseCoverlet(raw, o)
+	} else if strings.HasPrefix(o.Engine, "Go") {
 		files, err = parseGo(raw, o)
 	} else {
 		files, err = parseLLVM(raw, o)
