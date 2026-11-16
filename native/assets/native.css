@@ -1,0 +1,10 @@
+/* Native importer source-range views; upstream report.css remains unchanged. */
+.native-table,.native-source { max-width:100%; overflow-x:auto; }
+html body table.native-code { width:100%; border-collapse:collapse; background:#fff; border:1px solid #d7e1f2; }
+html body table.native-code td { vertical-align:top; padding:0 8px; border:0; }
+html body table.native-code td.native-number { width:1%; text-align:right; color:#637895; background:#f2f5fd; }
+html body table.native-code pre { margin:0; white-space:pre; tab-size:4; font:13px/1.65 "DejaVu Sans Mono",Consolas,monospace; }
+html body table.native-code .fc { background:#ccffcc; }
+html body table.native-code .pc { background:#ffffcc; }
+html body table.native-code .nc { background:#ffaaaa; }
+html body table.native-code tr:target { outline:2px solid #0a42be; outline-offset:-2px; }

@@ -1,0 +1,22 @@
+tkur_coverage report styling
+
+Styling resources and template structure are adapted from:
+https://github.com/virangle/tkur_jacoco
+Pinned revision: fbd7e252d9a424db1e5a7dd685dd25f520a3db15
+
+JaCoCo Copyright (c) 2009, 2026 Mountainminds GmbH & Co. KG and Contributors.
+JaCoCo materials are made available under Eclipse Public License 2.0.
+See jacoco-LICENSE.md and https://www.eclipse.org/legal/epl-2.0/.
+SVG icon notices and license: lucide-LICENSE.txt.
+The tkur.svg logo is retained unmodified from the explicitly requested upstream
+repository. It is not presented as a newly created or independently licensed mark.
+Exact resource paths, source URLs, SHA256 and Git blob hashes: provenance.json.
+
+Unmodified upstream resources: report.css and SVG files.
+Adaptation: ReportPage header/footer/breadcrumb structure translated to Python;
+product identifier is tkur_coverage rather than tkur_jacoco, engine names reflect
+LLVM or coverage.py. adapter.css maps engine table/source markup to the shared
+style. Counter values and measured source contents are not changed by styling.
+
+Original LLVM and coverage.py reports/assets retain their upstream notices and
+respective licenses. Styling does not relicense those components.

@@ -1,0 +1,195 @@
+{
+  "repository": "https://github.com/virangle/tkur_jacoco",
+  "commit": "fbd7e252d9a424db1e5a7dd685dd25f520a3db15",
+  "files": [
+    {
+      "upstream_path": "LICENSE.md",
+      "file": "upstream-reference/LICENSE.md",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/LICENSE.md",
+      "git_blob_sha": "61b074d2c1732f987f5e1a068756dfa6ecc96b9a",
+      "sha256": "c1169c6a71e0b59da9435afac9e5d19b9529106954f0cd9faf16f9efd15ac0fe"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/page/NodePage.java",
+      "file": "upstream-reference/NodePage.java",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/page/NodePage.java",
+      "git_blob_sha": "b0c7ebf1291d74331ed86c94a913a08700e4cda0",
+      "sha256": "3a6d125dc6dd4f5b9e5b0f9800ef2c828fc205c1a651827579c134221aa82637"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/page/ReportPage.java",
+      "file": "upstream-reference/ReportPage.java",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/page/ReportPage.java",
+      "git_blob_sha": "8fbf51a70e34702a7dc922ea05ae8730d166b9ef",
+      "sha256": "b623fee52a52e243b45544e9b168ea0c0d372bbc624d0abb71ec6616a2f1f577"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/page/TablePage.java",
+      "file": "upstream-reference/TablePage.java",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/page/TablePage.java",
+      "git_blob_sha": "118ee88164c152a161ff65e3b4321826b15c32ec",
+      "sha256": "b676560d6d79b43638c3414a544f24de7955b091b0b8e6ca607039f2751fafd2"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/page/tkur.properties",
+      "file": "upstream-reference/tkur.properties",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/page/tkur.properties",
+      "git_blob_sha": "cf200ac316927e774c72cf7c1dcf232eca6d4205",
+      "sha256": "f8cd63e7ef284e0010fb3499caabb86a8ed9336a87e69848a665fd09eebf9bf4"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/resources/Resources.java",
+      "file": "upstream-reference/Resources.java",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/resources/Resources.java",
+      "git_blob_sha": "191ec4cb02f2fa80667f1a5c80d46243eec65188",
+      "sha256": "dae2c592952705d192605f236aab1570b8035aff07bc94c3b7c5cb2ff83cd0c1"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/resources/branchfc.svg",
+      "file": "tkur_coverage/assets/branchfc.svg",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/resources/branchfc.svg",
+      "git_blob_sha": "d0ec0329f798cdd1fa9131c850c2b8a5e0843c99",
+      "sha256": "8df666280a80f6a2e77a963fa920145b5678fbf54be4f6b083f8ff152dcfe224"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/resources/branchnc.svg",
+      "file": "tkur_coverage/assets/branchnc.svg",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/resources/branchnc.svg",
+      "git_blob_sha": "1542593ea55342fd6c54bad727cf1dfb412a45cf",
+      "sha256": "d73887a794e6f320c063191c50c1da79ebff7e07c20f43f72bbbd5a96caaa960"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/resources/branchpc.svg",
+      "file": "tkur_coverage/assets/branchpc.svg",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/resources/branchpc.svg",
+      "git_blob_sha": "926b0d6ffceb03f341d17bb30d7ed0d4d40d64c3",
+      "sha256": "172e1f69b95d5dd1975c836f21d6aa70f13250a622fa4a8983fc2b56510382fd"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/resources/bundle.svg",
+      "file": "tkur_coverage/assets/bundle.svg",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/resources/bundle.svg",
+      "git_blob_sha": "b7a8480bc28f667639c1abcafcb8dea7ba9f26c0",
+      "sha256": "f2b2d767716420b7d4924b8628b35f8218fa98dbbd63f0c0665cbd30f1e23582"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/resources/class.svg",
+      "file": "tkur_coverage/assets/class.svg",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/resources/class.svg",
+      "git_blob_sha": "3adc9be1e952a0713733540365dd75e582c058ec",
+      "sha256": "61dc3cca01a22b6a8faf0d5ca2f2c90bd52b3ea263608b1f90c4fde0bda921f4"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/resources/down.svg",
+      "file": "tkur_coverage/assets/down.svg",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/resources/down.svg",
+      "git_blob_sha": "1e9fdd6f30c70ea45e1f8f5bc5d415bd044a64cd",
+      "sha256": "7705b5982c3ae884496ce5dfb8738a5aa25be31261c1385cf819e643a9b197e8"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/resources/greenbar.svg",
+      "file": "tkur_coverage/assets/greenbar.svg",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/resources/greenbar.svg",
+      "git_blob_sha": "87960b0823c9b4ca6f87acbf479b81c048a35372",
+      "sha256": "c7d07db9e79f35f2ddfc48a29143709896339bc920d33b3911722e955f1f666b"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/resources/group.svg",
+      "file": "tkur_coverage/assets/group.svg",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/resources/group.svg",
+      "git_blob_sha": "b987616ec08a59f5bed47795463e8e437c57b013",
+      "sha256": "34e5804bbe1512c2308a7bdde364ad99400d612452c14620f7c9c93ebc890833"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/resources/lucide-LICENSE.txt",
+      "file": "tkur_coverage/assets/lucide-LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/resources/lucide-LICENSE.txt",
+      "git_blob_sha": "718bb3f0e44153809972abed31839375804bf652",
+      "sha256": "b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/resources/method.svg",
+      "file": "tkur_coverage/assets/method.svg",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/resources/method.svg",
+      "git_blob_sha": "519df4cd249e513c0d51d63b3666ffc08e4a83d9",
+      "sha256": "40cc8fe692488af6e78a8db62b1dfbeedfcce8e8932386a727623c0641d41a2d"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/resources/package.svg",
+      "file": "tkur_coverage/assets/package.svg",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/resources/package.svg",
+      "git_blob_sha": "93d97d4e0b96c1fd1ceb516d486120e0f2de766d",
+      "sha256": "36933f806512f6cea50ed262ee24a2ab2b8359bb2fc0fd28bed0af7bcf10f367"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/resources/redbar.svg",
+      "file": "tkur_coverage/assets/redbar.svg",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/resources/redbar.svg",
+      "git_blob_sha": "ef471554a31ea63b956dc751419e9beee690da27",
+      "sha256": "6c9b349caf55c805b5b02e6602ccae1cb9cfda087052f675a1ea80f274aa8116"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/resources/report.css",
+      "file": "tkur_coverage/assets/report.css",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/resources/report.css",
+      "git_blob_sha": "112a0e017f4a1406ed3de0356cfb9550620d92b7",
+      "sha256": "99c66a309fb78c5371e5ba5f653b5d9266667bd9d5bc2464dce059074ec24719"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/resources/report.svg",
+      "file": "tkur_coverage/assets/report.svg",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/resources/report.svg",
+      "git_blob_sha": "cc68c64c40440d9d332c866b18e9e99c61361d01",
+      "sha256": "683be5103b83c8064e03c2b4f9891434bea29150a4a431b4fda657975a58670a"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/resources/session.svg",
+      "file": "tkur_coverage/assets/session.svg",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/resources/session.svg",
+      "git_blob_sha": "19bfe72f2503a5d3fbfc3fa31fceb75b30ed156e",
+      "sha256": "e77c5c2df6ceb6925492043df5d07713616f8b9fe25f3474266c9c0edc69e4ab"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/resources/sort.svg",
+      "file": "tkur_coverage/assets/sort.svg",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/resources/sort.svg",
+      "git_blob_sha": "f3621a018b71b928396f367a9857e2159f4e5eee",
+      "sha256": "d5ffa221ab30fca69befd2e5b63b4ae79b08d2d651808630863fee654bb3a300"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/resources/source.svg",
+      "file": "tkur_coverage/assets/source.svg",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/resources/source.svg",
+      "git_blob_sha": "028c666eb6ecf6495ea28785bb2ae3e96d4dadca",
+      "sha256": "b10eeb2dc5eba84f176db96853d8e215c63c1c9f0fed53634e87148a850034ff"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/resources/tkur.svg",
+      "file": "tkur_coverage/assets/tkur.svg",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/resources/tkur.svg",
+      "git_blob_sha": "6acc5d6b837e6c18f51b3613c6c4e8704f875a16",
+      "sha256": "f21a0906fb1eee7e85881ffbfe37855a2769887c1947231a520ef9ea6132fafd"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/resources/up.svg",
+      "file": "tkur_coverage/assets/up.svg",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/resources/up.svg",
+      "git_blob_sha": "4c328e7be1332becbcefe1d7ae9d477df0e8c60d",
+      "sha256": "e3772002709741c57f6957e917d3ae11fdbc131b0a2e0f398ddf7afca71f52ff"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/table/BarColumn.java",
+      "file": "upstream-reference/BarColumn.java",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/table/BarColumn.java",
+      "git_blob_sha": "2f564e97cbf0f6e21dcc8f064d12e6617a8a6052",
+      "sha256": "279782f9b45cc6d7ad2875af6cefa77b4d0b7174f6bf750893ef20e660777048"
+    },
+    {
+      "upstream_path": "org.jacoco.report/src/org/jacoco/report/internal/html/table/Table.java",
+      "file": "upstream-reference/Table.java",
+      "url": "https://raw.githubusercontent.com/virangle/tkur_jacoco/fbd7e252d9a424db1e5a7dd685dd25f520a3db15/org.jacoco.report/src/org/jacoco/report/internal/html/table/Table.java",
+      "git_blob_sha": "01eab82d38004f0c1a6d79b91f5946b88f7c5383",
+      "sha256": "5b81c7c521de10d56a96852ab1e8b5d3b093e5314d9fdcad795e5de6e8016a61"
+    }
+  ]
+}
